@@ -241,7 +241,8 @@ data:
     {{- range $plugin := .Values.stream_plugins }}
       - {{ $plugin }}
     {{- end }}
-
+    ext-plugin:                       # external plugin
+      cmd: {{.Values.ext_plugin.cmd}}
     {{- if or .Values.pluginAttrs .Values.customPlugins.enabled .Values.serviceMonitor.enabled}}
     plugin_attr:
     {{- if .Values.serviceMonitor.enabled }}

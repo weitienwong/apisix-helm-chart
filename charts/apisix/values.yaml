@@ -47,10 +47,10 @@ apisix:
         path: ""
 
   image:
-    repository: apache/apisix
+    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 2.10.0-alpine
+    tag: 2.11.0-alpine
 
   replicaCount: 1
 
@@ -152,7 +152,6 @@ admin:
     ipList:
       - 127.0.0.1/24
 
-
 # APISIX plugins to be enabled
 plugins:
   - api-breaker
@@ -202,6 +201,10 @@ stream_plugins:
   - mqtt-proxy
   - ip-restriction
   - limit-conn
+
+# run plugin     --- weitian
+ext_plugin:
+  cmd: ['java', '-jar', '-Xmx4g', '-Xms4g', 'apisix-runner-bin/apisix-java-plugin-runner.jar']
 
 pluginAttrs: {}
 
@@ -344,8 +347,8 @@ etcd:
 
 
 dashboard:
-  enabled: false
+  enabled: true
 
 
 ingress-controller:
-  enabled: false
+  enabled: true
