@@ -101,7 +101,7 @@ gateway:
     enabled: true
     servicePort: 80
     containerPort: 9080
-    nodePort: 30980
+    nodePort: 31980
   tls:
     enabled: false
     servicePort: 443
