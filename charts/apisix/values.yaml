@@ -47,8 +47,10 @@ apisix:
         path: ""
 
   image:
-    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
-    pullPolicy: Always
+#    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
+    repository: apache/apisix
+    pullPolicy: IfNotPresent
+#    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: 2.11.0-alpine
 
@@ -101,7 +103,7 @@ gateway:
     enabled: true
     servicePort: 80
     containerPort: 9080
-    nodePort: 31980
+    nodePort: 30980
   tls:
     enabled: false
     servicePort: 443
@@ -344,7 +346,7 @@ etcd:
   service:
     port: 2379
 
-  replicaCount: 1
+  replicaCount: 3
 
 
 dashboard:
