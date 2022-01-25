@@ -101,6 +101,7 @@ gateway:
     enabled: true
     servicePort: 80
     containerPort: 9080
+    nodePort: 30980
   tls:
     enabled: false
     servicePort: 443
@@ -351,4 +352,4 @@ dashboard:
 
 
 ingress-controller:
-  enabled: true
+  enabled: false
