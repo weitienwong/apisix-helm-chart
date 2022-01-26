@@ -47,10 +47,10 @@ apisix:
         path: ""
 
   image:
-#    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
-    repository: apache/apisix
-    pullPolicy: IfNotPresent
-#    pullPolicy: Always
+    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
+#    repository: apache/apisix
+#    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
     tag: 2.11.0-alpine
 
