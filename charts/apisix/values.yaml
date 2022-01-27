@@ -47,12 +47,12 @@ apisix:
         path: ""
 
   image:
-    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
-#    repository: apache/apisix
-#    pullPolicy: IfNotPresent
-    pullPolicy: Always
+#    repository: registry.cn-beijing.aliyuncs.com/walter/apisix
+    repository: apache/apisix
+    pullPolicy: IfNotPresent
+#    pullPolicy: Always
     # Overrides the image tag whose default is the chart appVersion.
-    tag: 2.11.0-alpine
+    tag: 2.10.2-alpine
 
   replicaCount: 1
 
@@ -207,8 +207,8 @@ stream_plugins:
 
 # run plugin     --- weitian
 ext_plugin:
-  cmd: ['java', '-jar', '-Xmx4g', '-Xms4g', '/usr/local/apisix/apisix-runner-bin/apisix-java-plugin-runner.jar']
-
+#  cmd: ['java', '-jar', '-Xmx4g', '-Xms4g', '/usr/local/apisix/apisix-runner-bin/apisix-java-plugin-runner.jar']
+  path_for_test: /tmp/runner.sock
 pluginAttrs: {}
 
 # customPlugins allows you to mount your own HTTP plugins.

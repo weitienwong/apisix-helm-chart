@@ -242,7 +242,9 @@ data:
       - {{ $plugin }}
     {{- end }}
     ext-plugin:                       # external plugin
-      cmd: {{.Values.ext_plugin.cmd}}
+#      cmd: {{.Values.ext_plugin.cmd}}
+      path_for_test: {{.Values.ext_plugin.path_for_test}}
+
     {{- if or .Values.pluginAttrs .Values.customPlugins.enabled .Values.serviceMonitor.enabled}}
     plugin_attr:
     {{- if .Values.serviceMonitor.enabled }}
