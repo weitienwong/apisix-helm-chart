@@ -208,7 +208,7 @@ stream_plugins:
 # run plugin     --- weitian
 ext_plugin:
 #  cmd: ['java', '-jar', '-Xmx4g', '-Xms4g', '/usr/local/apisix/apisix-runner-bin/apisix-java-plugin-runner.jar']
-  path_for_test: /tmp/runner.sock
+  testpath: /tmp/runner.sock
 pluginAttrs: {}
 
 # customPlugins allows you to mount your own HTTP plugins.
