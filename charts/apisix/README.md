@@ -8,21 +8,10 @@ You can use Apache APISIX to handle traditional north-south traffic, as well as 
 
 This chart bootstraps all the components needed to run Apache APISIX on a Kubernetes Cluster using [Helm](https://helm.sh).
 
-
-## TL;DR
-
-```sh
-helm repo add apisix https://charts.apiseven.com
-helm repo update
-
-helm install apisix/apisix --generate-name
-```
-
 ## Prerequisites
 
 * Kubernetes v1.14+
 * Helm v3+
-
 
 ## Install
 
@@ -32,7 +21,7 @@ To install the chart with the release name `my-apisix`:
 helm repo add apisix https://charts.apiseven.com
 helm repo update
 
-helm install my-apisix apisix/apisix
+helm install [RELEASE_NAME] apisix/apisix --namespace ingress-apisix --create-namespace
 ```
 
 ## Uninstall
@@ -40,7 +29,7 @@ helm install my-apisix apisix/apisix
  To uninstall/delete a Helm release `my-apisix`:
 
  ```sh
-helm delete my-apisix
+helm delete [RELEASE_NAME] --namespace ingress-apisix
  ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -55,12 +44,14 @@ The following tables lists the configurable parameters of the apisix chart and t
 |---------------------------|-------------------------------------------------|---------------------------------------------------------|
 | `global.imagePullSecrets` | Global Docker registry secret names as an array | `[]` (does not add image pull secrets to deployed pods) |
 
-
 ### apisix parameters
 
 | Parameter                                | Description                                         | Default                                                 |
 |------------------------------------------|-----------------------------------------------------|---------------------------------------------------------|
 | `apisix.enabled`                         | Enable or disable Apache APISIX itself              | `true`                                                  |
+| `apisix.enableIPv6`                      | Enable nginx IPv6 resolver                          | `true`                                                  |
+| `apisix.enableCustomizedConfig`          | Enable full customized `config.yaml`                | `false`                                                  |
+| `apisix.customizedConfig`                | If `apisix.enableCustomizedConfig` is true, full customized `config.yaml`. Please note that other settings about APISIX config will be ignored  | `{}`                                                 |
 | `apisix.image.repository`                | Apache APISIX image repository                      | `apache/apisix`                                         |
 | `apisix.image.tag`                       | Apache APISIX image tag                             | `{TAG_NAME}` (the latest Apache APISIX image tag)       |
 | `apisix.image.pullPolicy`                | Apache APISIX image pull policy                     | `IfNotPresent`                                          |
@@ -68,6 +59,9 @@ The following tables lists the configurable parameters of the apisix chart and t
 | `apisix.podAnnotations`                  | Annotations to add to each pod                      | `{}`                                                    |
 | `apisix.podSecurityContext`              | Set the securityContext for Apache APISIX pods      | `{}`                                                    |
 | `apisix.securityContext`                 | Set the securityContext for Apache APISIX container | `{}`                                                    |
+| `apisix.podDisruptionBudget.enabled`     | Enable or disable podDisruptionBudget               | `false`                                                 |
+| `apisix.podDisruptionBudget.minAvailable`| Set the `minAvailable` of podDisruptionBudget. You can specify only one of `maxUnavailable` and `minAvailable` in a single PodDisruptionBudget. See [Specifying a Disruption Budget for your Application](https://kubernetes.io/docs/tasks/run-application/configure-pdb/#specifying-a-poddisruptionbudget) for more details | `Not set` |
+| `apisix.podDisruptionBudget.maxUnavailable`| Set the maxUnavailable of podDisruptionBudget     | `1`                                                     |
 | `apisix.resources`                       | Set pod resource requests & limits                  | `{}`                                                    |
 | `apisix.nodeSelector`                    | Node labels for Apache APISIX pod assignment        | `{}`                                                    |
 | `apisix.tolerations`                     | List of node taints to tolerate                     | `{}`                                                    |
@@ -83,7 +77,6 @@ The following tables lists the configurable parameters of the apisix chart and t
 | `apisix.luaModuleHook.configMapRef.mounts[].key` | Name of the ConfigMap key, for setting the mapping relationship between ConfigMap key and the lua module code path. | `""` |
 | `apisix.luaModuleHook.configMapRef.mounts[].path` | Filepath of the plugin code, for setting the mapping relationship between ConfigMap key and the lua module code path. | `""` |
 
-
 ### gateway parameters
 
 Apache APISIX service parameters, this determines how users can access itself.
@@ -98,7 +91,6 @@ Apache APISIX service parameters, this determines how users can access itself.
 | `gateway.tls.certCAFilename`    | filename be used in the `gateway.tls.existingCASecret`                                                                                                                                          | `""`       |
 | `gateway.stream`                | Apache APISIX service settings for stream                                                                                                                                           |            |
 | `gateway.ingress`               | Using ingress access Apache APISIX service                                                                                                                                          |            |
-
 
 ### admin parameters
 
@@ -145,7 +137,7 @@ Apache APISIX service parameters, this determines how users can access itself.
 
 If etcd.enabled is true, set more values of bitnami/etcd helm chart use etcd as prefix.
 
-### plugins and stream_plugins parameters 
+### plugins and stream_plugins parameters
 
 Default enabled plugins. See [configmap template](https://github.com/apache/apisix-helm-chart/blob/master/charts/apisix/templates/configmap.yaml) for details.
 
@@ -201,7 +193,6 @@ discovery:
 ### dashboard parameters
 
 Configurations for apisix-dashboard sub chart.
-
 
 ### ingress-controller parameters
 

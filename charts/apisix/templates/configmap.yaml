@@ -21,6 +21,13 @@ metadata:
   name: {{ include "apisix.fullname" . }}
   namespace: {{ .Release.Namespace }}
 data:
+{{- if .Values.apisix.enableCustomizedConfig }}
+  config.yaml: |-
+    {{- range $key, $value := .Values.apisix.customizedConfig }}
+    {{ $key }}:
+      {{- include "apisix.tplvalues.render" (dict "value" $value "context" $) | nindent 6 }}
+    {{- end }}
+{{- else }}
   config.yaml: |-
     #
     # Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,11 +51,6 @@ data:
       enable_admin: {{ .Values.admin.enabled }}
       enable_admin_cors: {{ .Values.admin.cors }}
       enable_debug: false
-      enable_dev_mode: false          # Sets nginx worker_processes to 1 if set to true
-      enable_reuseport: true          # Enable nginx SO_REUSEPORT switch if set to true.
-      enable_ipv6: true
-      config_center: etcd             # etcd: use etcd to store the config value
-                                      # yaml: fetch the config value from local yaml file `/your_path/conf/apisix.yaml`
       {{- if or .Values.customPlugins.enabled .Values.apisix.luaModuleHook.enabled }}
       extra_lua_path: {{ .Values.customPlugins.luaPath }};{{ .Values.apisix.luaModuleHook.luaPath }}
       {{- end }}
@@ -57,6 +59,11 @@ data:
       lua_module_hook: {{ .Values.apisix.luaModuleHook.hookPoint | quote }}
       {{- end }}
 
+      enable_dev_mode: false                       # Sets nginx worker_processes to 1 if set to true
+      enable_reuseport: true                       # Enable nginx SO_REUSEPORT switch if set to true.
+      enable_ipv6: {{ .Values.apisix.enableIPv6 }} # Enable nginx IPv6 resolver
+      config_center: etcd                          # etcd: use etcd to store the config value
+                                                   # yaml: fetch the config value from local yaml file `/your_path/conf/apisix.yaml`
 
       #proxy_protocol:                 # Proxy Protocol configuration
       #  listen_http_port: 9181        # The port with proxy protocol for http, it differs from node_listen and port_admin.
@@ -115,19 +122,27 @@ data:
         http: 'radixtree_uri'         # radixtree_uri: match route by uri(base on radixtree)
                                       # radixtree_host_uri: match route by host + uri(base on radixtree)
         ssl: 'radixtree_sni'          # radixtree_sni: match route by SNI(base on radixtree)
-      {{- if and .Values.gateway.stream.enabled (or (gt (len .Values.gateway.stream.tcp) 0) (gt (len .Values.gateway.stream.udp) 0)) }}
+      {{- if or (index .Values "ingress-controller" "enabled") (and .Values.gateway.stream.enabled (or (gt (len .Values.gateway.stream.tcp) 0) (gt (len .Values.gateway.stream.udp) 0))) }}
       stream_proxy:                 # TCP/UDP proxy
         only: {{ .Values.gateway.stream.only }}
-        {{- if gt (len .Values.gateway.stream.tcp) 0 }}
+        {{- if or (index .Values "ingress-controller" "enabled") (gt (len .Values.gateway.stream.tcp) 0) }}
         tcp:                        # TCP proxy port list
+          {{- if gt (len .Values.gateway.stream.tcp) 0}}
           {{- range .Values.gateway.stream.tcp }}
           - {{ . }}
           {{- end }}
+          {{- else}}
+          - 9100
+          {{- end }}
         {{- end }}
-        {{- if gt (len .Values.gateway.stream.udp) 0 }}
+        {{- if or (index .Values "ingress-controller" "enabled") (gt (len .Values.gateway.stream.udp) 0) }}
         udp:                        # UDP proxy port list
+          {{- if gt (len .Values.gateway.stream.udp) 0}}
           {{- range .Values.gateway.stream.udp }}
           - {{ . }}
+          {{- end }}
+          {{- else}}
+          - 9200
           {{- end }}
         {{- end }}
       {{- end }}
@@ -263,4 +278,5 @@ data:
     {{- end }}
     {{- end }}
     {{- end }}
+{{- end }}
 {{- end }}
